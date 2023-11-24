@@ -112,6 +112,8 @@ with open(output_path_cpp, 'w') as f:
   f.write( "}\n")
 
 with open(output_path_txt, 'w') as f:
+  f.write(essentialVersion + "\n")
+  f.write("\n")
   f.write("\n".join(compileStamp) + "\n")
   f.write("\n")
   f.write("\n".join(gitstamp) + "\n")

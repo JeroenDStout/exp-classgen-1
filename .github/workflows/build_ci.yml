@@ -1,0 +1,46 @@
+name: CI
+
+# On a push event on any branch
+on: [push]
+
+env:
+  BUILD_TYPE: Release
+  
+jobs:
+  build:
+    name: "Windows Latest MSVC"
+    runs-on: "Windows-latest"
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: git fetch
+      run: git fetch --unshallow --update-head-ok origin '+refs/heads/*:refs/heads/*'
+          
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+      
+    - name: Build Debug
+      run: cmake --build ${{github.workspace}}/build --config Debug
+      
+    - name: Build Release
+      run: cmake --build ${{github.workspace}}/build --config Release
+
+    - name: Package (Debug)
+      run: python ${{github.workspace}}/util/bumpkins_package_zip.py
+        mode:"Debug"
+        config:"Debug"
+        info:"build/publish_info.txt"
+        out:"zip/experiment-debug.zip"
+      
+    - name: Package (Release)
+      run: python ${{github.workspace}}/util/bumpkins_package_zip.py
+        mode:"Debug"
+        config:"Release"
+        info:"build/publish_info.txt"
+        out:"zip/experiment-release.zip"
+       
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifacts
+        path: zip/*.zip

@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(classgen)
 include(cmake/project.cmake)
+include(cmake/publish.cmake)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -20,4 +21,5 @@ include(cmake/sources.cmake)
 # Subprojects
 add_subdirectory(src/version)
 
-message(STATUS "")
+# Publication
+finalise_publish()

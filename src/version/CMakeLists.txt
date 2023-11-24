@@ -25,6 +25,7 @@ configure_cxx_target(version)
 add_custom_command(
   COMMENT			"Generate version file"
   OUTPUT    		${abs_gen_include}/git_version.h
+                    ${abs_gen_script}/git_version.txt
   COMMAND   		${Python3_EXECUTABLE}
 					${abs_can_script}/generate_git_version.py
 					${abs_gen_include}/git_version.h
@@ -35,3 +36,4 @@ add_custom_command(
   WORKING_DIRECTORY ${project_root_dir}
   VERBATIM
 )
+configure_publish_file("${abs_gen_script}/git_version.txt" "version.txt")
