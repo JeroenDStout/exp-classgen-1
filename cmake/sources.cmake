@@ -146,7 +146,7 @@ macro(setup_project_source project_ref project_source_group)
 endmacro()
 
 
-macro(setup_project_source_specific project_ref project_source_group generated)
+macro(setup_project_source_specific project_ref project_source_group mode)
   set_project_source_list(${project_ref})
   
   set(new_files "")
@@ -154,7 +154,7 @@ macro(setup_project_source_specific project_ref project_source_group generated)
   message(STATUS "Add sources for ${project_ref}/${project_source_group}")
   
   foreach (var IN ITEMS ${ARGN})
-    internal_add_project_source(${var} ${generated})
+    internal_add_project_source("${mode}" ${var})
   endforeach()
   
   # set source group
