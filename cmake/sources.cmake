@@ -174,14 +174,8 @@ endmacro()
 
 macro(print_all_project_sources)
   foreach(var IN LISTS ${project_source_list})
-    file(RELATIVE_PATH rel ${project_root_dir} ${var})
-    
-	if (${var} MATCHES "${abs_gen}*")
-	  STRING(REGEX REPLACE "^${abs_gen}/" "" rel ${var})
-      list(APPEND display_list "${rel} *")
-	else()
-      list(APPEND display_list "${rel}")
-	endif()
+    sources_get_canonprint_filepath(${var} rel)
+    list(APPEND display_list "${rel}")
   endforeach()
   
   list(SORT display_list)
@@ -229,6 +223,47 @@ function(configure_project_static_lib project_ref)
   target_include_directories(${project_ref} PRIVATE ${project_root_dir}/include ${CMAKE_BINARY_DIR}/gen/include)
   install(TARGETS ${project_ref} DESTINATION ${project_root_dir}/bin)
   set_target_properties(${project_ref} PROPERTIES FOLDER ${project_folder})
+endfunction()
+
+
+function(configure_project_script project_ref)
+  set_project_source_list(${project_ref})
+  clean_project_source_for_build()
+  
+  message(STATUS "Configuring script project ${project_ref}")
+  print_all_project_sources()
+  
+  add_library(${project_ref} STATIC ${${project_source_list}})
+  target_include_directories(${project_ref} PRIVATE ${project_root_dir}/include ${CMAKE_BINARY_DIR}/gen/include)
+  install(TARGETS ${project_ref} DESTINATION ${project_root_dir}/bin)
+  set_target_properties(${project_ref} PROPERTIES FOLDER ${project_folder})
+  set_target_properties(${project_ref} PROPERTIES LINKER_LANGUAGE CXX)
+endfunction()
+
+
+#
+# Utility
+#
+
+
+function(sources_get_canonprint_filepath in_path out_path)  
+  if (${in_path} MATCHES "${abs_can_src}*")
+    STRING(REGEX REPLACE "^${abs_can_src}/" "src/-/" tmp_path ${in_path})
+  elseif (${in_path} MATCHES "${abs_can_include}*")
+    STRING(REGEX REPLACE "^${abs_can_include}/" "include/-/" tmp_path ${in_path})
+  elseif (${in_path} MATCHES "${abs_can_script}*")
+    STRING(REGEX REPLACE "^${abs_can_script}/" "script/-/" tmp_path ${in_path})
+  elseif (${in_path} MATCHES "${abs_gen_src}*")
+    STRING(REGEX REPLACE "^${abs_gen_src}/" "src/-/" tmp_path "${in_path}*")
+  elseif (${in_path} MATCHES "${abs_gen_include}*")
+    STRING(REGEX REPLACE "^${abs_gen_include}/" "include/-/" tmp_path "${in_path}*")
+  elseif (${in_path} MATCHES "${abs_gen_script}*")
+    STRING(REGEX REPLACE "^${abs_gen_script}/" "script/-/" tmp_path "${in_path}*")
+  elseif()
+    file(RELATIVE_PATH rel ${project_root_dir} ${in_path})
+    STRING(REGEX REPLACE "^${project_root_dir}/" "      ? " tmp_path "${rel}")
+  endif()
+  set(${out_path} ${tmp_path} PARENT_SCOPE)
 endfunction()
 
 
