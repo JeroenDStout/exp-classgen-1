@@ -2,5 +2,6 @@ bin/
 build/
 zip/
 __pycache__/
+_junc_tree/
 
 touch
