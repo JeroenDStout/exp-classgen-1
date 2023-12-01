@@ -31,9 +31,9 @@ add_custom_command(
 					${abs_gen_include}/git_version.h
 					${abs_gen_script}/git_version.txt
                     "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}"
-  DEPENDS			${project_root_dir}/touch
+  DEPENDS			${cmake_root_dir}/touch
                     ${abs_can_script}/generate_git_version.py
-  WORKING_DIRECTORY ${project_root_dir}
+  WORKING_DIRECTORY ${cmake_root_dir}
   VERBATIM
 )
 configure_publish_file("${abs_gen_script}/git_version.txt" "version.txt")

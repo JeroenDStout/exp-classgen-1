@@ -1,13 +1,13 @@
 message(STATUS "Config antlr")
 
 
-function(antlr_py_build_single source destination append_used_files)
+function(antlr_py_build_single source destination append_generated_files)
   sources_get_canonprint_filepath(${source} source_relpath)
   sources_get_canonprint_filepath("${abs_gen_script}/${destination}" destination_relpath)
   
   get_filename_component(base_out_name ${source} NAME_WLE)
   
-  set(loc_used_files ${${append_used_files}})
+  set(loc_used_files ${${append_generated_files}})
   list(APPEND loc_used_files "${destination}/${base_out_name}Lexer.py")
   list(APPEND loc_used_files "${destination}/${base_out_name}Listener.py")
   list(APPEND loc_used_files "${destination}/${base_out_name}Parser.py")
@@ -33,5 +33,5 @@ function(antlr_py_build_single source destination append_used_files)
     VERBATIM
   )
   
-  set(${append_used_files} ${loc_used_files} PARENT_SCOPE)
+  set(${append_generated_files} ${loc_used_files} PARENT_SCOPE)
 endfunction()
