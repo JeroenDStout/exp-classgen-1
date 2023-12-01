@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-packages_to_install = [ 'antlr4-tools' ]
+packages_to_install = [ 'antlr4-tools', 'antlr4-python-runtime' ]
 install_all         = False
 
 if len(sys.argv) >= 2:
