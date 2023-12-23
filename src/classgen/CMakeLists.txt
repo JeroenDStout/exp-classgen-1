@@ -12,6 +12,13 @@ setup_project_source(classgen "core"
   script:
     classgen_proc.py
 )
+setup_project_source(classgen "core/classgen"
+  script:
+    classgen/debug.py
+    classgen/reader.py
+    classgen/writer.py
+    classgen/types.py
+)
 
 # Antlr files
 set(antlr_generated_files)

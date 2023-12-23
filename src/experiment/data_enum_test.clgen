@@ -1,1 +1,12 @@
-(10 + 20) * 30^5 + sin(5-2) - (10 + 20^(5-2))
+enum some_numbers {
+  to_int  aka i -> i32
+  is_even aka e -> bool { false }
+
+  [ one	   i -> 1
+	two	   i -> 2  e -> true
+	three  i -> 3
+  ]
+}
+
+enum some_other_enum {
+}
