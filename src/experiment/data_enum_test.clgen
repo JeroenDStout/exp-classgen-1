@@ -1,12 +1,19 @@
 enum some_numbers {
-  to_int  aka i -> i32
-  is_even aka e -> bool { false }
+  to_int  aka i  :> i8
+  is_even aka e  :> bool { false }
 
-  [ one	   i -> 1
-	two	   i -> 2  e -> true
-	three  i -> 3
+  [ one	   i :> 1
+	two	   i :> 2  e :> true
+	three  i :> 3
+	eight  i :> 8  e :> true
   ]
 }
 
-enum some_other_enum {
+enum meta {
+  to_some_numbers aka n  :> some_numbers
+
+  [ the_loneliest_number  n :> one
+    its_a_crowd           n :> three
+  ]
 }
+

@@ -18,6 +18,7 @@ setup_project_source(classgen "core/classgen"
     classgen/reader.py
     classgen/writer.py
     classgen/types.py
+    classgen/tree.py
 )
 
 # Antlr files

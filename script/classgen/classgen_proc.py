@@ -34,6 +34,7 @@ parser = classgen_grammarParser(stream)
 #  print(lexer.ruleNames[token.type - 1])
         
 tree    = parser.prog()
-visitor = classgen_reader.classgen_reader_visitor(parser)
+visitor = classgen_reader.cg_reader_visitor(parser)
 
 visitor.visit(tree)
+print(str(visitor.tree))

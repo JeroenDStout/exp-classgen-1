@@ -1,4 +1,55 @@
 grammar classgen_grammar;	
+    
+// ------------------------------
+//      tokens
+// ------------------------------
+
+NEWLINE         : [\r\n]+    -> channel( HIDDEN );
+WHITESPACE      : [ \n\t\r]+ -> channel( HIDDEN );
+
+TOKEN_TRUE      : 'true'  ;
+TOKEN_FALSE     : 'false' ;
+TOKEN_T         : 'T'     ;
+TOKEN_F         : 'F'     ;
+TOKEN_CURL_LH   : '{'     ;
+TOKEN_CURL_RH   : '}'     ;
+TOKEN_SQUARE_LH : '['     ;
+TOKEN_SQUARE_RH : ']'     ;
+TOKEN_ARROW_LW  : '<-'    ;
+TOKEN_ARROW_RW  : '->'    ;
+TOKEN_ARROW_SYM : '<->'   ;
+TOKEN_IPLMAP_LW : ':<'    ;
+TOKEN_IPLMAP_RW : ':>'    ;
+TOKEN_PLUS      : '+'     ;
+TOKEN_MINUS     : '-'     ;
+KEYWORD_ENUM    : 'enum'  ;
+KEYWORD_AKA     : 'aka'   ;
+KEYWORD_AS      : 'as'    ;
+
+IDENTIFIER_LIKE_INTRINSIC_INT
+    : ('i' | 'u') FRAG_DEC_NAT_NUMBER FRAG_NONDIGIT (FRAG_NONDIGIT | FRAG_DIGIT)*
+    ;
+    
+INTRINSIC_SINT
+    : 'i' FRAG_DEC_NAT_NUMBER
+    ;
+    
+INTRINSIC_UINT
+    : 'u' FRAG_DEC_NAT_NUMBER
+    ;
+    
+IDENTIFIER
+    : FRAG_NONDIGIT (FRAG_NONDIGIT | FRAG_DIGIT)*
+    | IDENTIFIER_LIKE_INTRINSIC_INT
+    ;
+    
+FRAG_DEC_NAT_NUMBER
+    : FRAG_DIGIT+
+    ;
+
+FRAG_NONDIGIT        : [a-zA-Z_] ;
+FRAG_DIGIT           : [0-9]     ;
+
 
 // ------------------------------
 //    prog
@@ -26,7 +77,7 @@ enum_declaration
     
 enum_declaration_element
     : enum_declaration_token_list
-    | mapping_declaration
+    | mapping_implied_declaration
     ;
     
 enum_declaration_token_list
@@ -34,19 +85,24 @@ enum_declaration_token_list
     ;
     
 enum_declaration_token_list_element
-    : identifier_pure (mapping_implementation_statement ','?)*
+    : identifier_pure (mapping_implied_implementation_statement ','?)*
     ;
     
 // ------------------------------
 //      maps
 // ------------------------------
 
-mapping_declaration
-    : identifier_flex TOKEN_ARROW_RW intrinsic mapping_default_value?
+mapping_implied_declaration
+    : identifier_flex TOKEN_IPLMAP_RW mapping_mapped_to_type mapping_default_value?
     ;
     
-mapping_implementation_statement
-    : identifier_pure TOKEN_ARROW_RW mapping_value
+mapping_implied_implementation_statement
+    : identifier_pure TOKEN_IPLMAP_RW mapping_value
+    ;
+
+mapping_mapped_to_type
+    : identifier_pure
+    | intrinsic
     ;
 
 mapping_default_value
@@ -54,25 +110,8 @@ mapping_default_value
     ;
 
 mapping_value
-    : v=constant
-    ;
-    
-// ------------------------------
-//      constants
-// ------------------------------
-
-constant
-    : constant_boolean
-    | constant_integer
-    ;
-    
-constant_boolean
-    : TOKEN_TRUE
-    | TOKEN_FALSE
-    ;
-    
-constant_integer
-    : FRAG_DEC_NAT_NUMBER
+    : constant
+    | identifier_pure
     ;
     
 // ------------------------------
@@ -123,44 +162,26 @@ intrinsic_signed_integer
     ;
     
 // ------------------------------
-//      fragments
-// ------------------------------
-    
-// ------------------------------
-//      tokens
+//      constants
 // ------------------------------
 
-NEWLINE         : [\r\n]+    -> channel( HIDDEN );
-WHITESPACE      : [ \n\t\r]+ -> channel( HIDDEN );
-
-TOKEN_TRUE      : 'true'  ;
-TOKEN_FALSE     : 'false' ;
-TOKEN_CURL_LH   : '{'     ;
-TOKEN_CURL_RH   : '}'     ;
-TOKEN_SQUARE_LH : '['     ;
-TOKEN_SQUARE_RH : ']'     ;
-TOKEN_ARROW_LW  : '<-'    ;
-TOKEN_ARROW_RW  : '->'    ;
-TOKEN_ARROW_SYM : '<->'   ;
-KEYWORD_ENUM    : 'enum'  ;
-KEYWORD_AKA     : 'aka'   ;
-KEYWORD_AS      : 'as'    ;
-    
-INTRINSIC_SINT
-    : 'i' FRAG_DEC_NAT_NUMBER
+constant
+    : constant_boolean
+    | constant_integer
     ;
     
-INTRINSIC_UINT
-    : 'u' FRAG_DEC_NAT_NUMBER
+constant_boolean
+    : (constant_boolean_true | constant_boolean_false)
     ;
     
-IDENTIFIER
-    : FRAG_NONDIGIT (FRAG_NONDIGIT | FRAG_DIGIT)*
+constant_boolean_true
+    : (TOKEN_TRUE | TOKEN_T)
     ;
     
-FRAG_DEC_NAT_NUMBER
-    : FRAG_DIGIT+
+constant_boolean_false
+    : (TOKEN_FALSE | TOKEN_F)
     ;
-
-FRAG_NONDIGIT   : [a-zA-Z_] ;
-FRAG_DIGIT      : [0-9]     ;
+    
+constant_integer
+    : FRAG_DEC_NAT_NUMBER
+    ;
